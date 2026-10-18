@@ -1,0 +1,28 @@
+
+# Remote pc and NAS are directly connected through ethernet 2.5G via a local subnet
+NAS : 192.168.50.2
+Remote : 192.168.50.3
+
+
+
+# Ubuntu / Debian
+sudo apt update && sudo apt install -y nfs-common
+
+# Fedora / RHEL / Arch
+sudo dnf install -y nfs-utils
+
+
+sudo mkdir -p /mnt/asustor/immich_data
+sudo mkdir -p /mnt/asustor/Photos_HDD
+
+sudo mount -t nfs 192.168.50.2:/volume2/immich_data /mnt/asustor/immich_data
+sudo mount -t nfs 192.168.50.2:/volume2/Photos_HDD /mnt/asustor/Photos_HDD
+
+
+Add persistence across reboot
+sudo nano /etc/fstab
+
+192.168.50.2:/volume2/immich_data /mnt/asustor/immich_data nfs defaults,nofail,_netdev 0 0
+192.168.50.2:/volume2/Photos_HDD  /mnt/asustor/Photos_HDD  nfs defaults,nofail,_netdev 0 0
+
+(The nofail and _netdev flags ensure your PC boots cleanly even if the NAS is turned off or disconnected).

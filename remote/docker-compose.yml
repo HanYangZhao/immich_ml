@@ -1,0 +1,23 @@
+name: immich-worker
+
+services:
+  immich-worker:
+    container_name: immich_worker
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    env_file:
+      - .env
+    environment:
+      IMMICH_WORKERS_EXCLUDE: api
+    volumes:
+      # NAS network shares mounted on the PC -> mapped to internal container paths
+      - ${REMOTE_UPLOAD_LOCATION}:/data
+      - ${REMOTE_EXTERNAL_LIB}:/Photos_External_Lib:ro
+      - /etc/localtime:/etc/localtime:ro
+    devices:
+      # Optional: GPU pass-through for hardware transcoding on PC
+      - /dev/dri:/dev/dri # Intel QuickSync (Linux)
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
